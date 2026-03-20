@@ -1,0 +1,77 @@
+%--- type declarations first
+ 
+tff(os_type, type, os : $tType).
+tff(origin_type, type, origin : $tType).
+tff(computer_type, type, computer : $tType).
+ 
+%--- the three operating systems
+ 
+tff(linux_type,   type, linux   : os).
+tff(windows_type, type, windows : os).
+tff(osx_type,     type, osx     : os).
+ 
+%--- the two origins
+ 
+tff(unix_type, type, unix : origin).
+tff(dos_type,  type, dos  : origin).
+ 
+%--- my computer
+ 
+tff(mypc_type, type, mypc : computer).
+ 
+%--- os_origin maps each OS to where it came from
+ 
+tff(os_origin_type, type, os_origin : os > origin).
+ 
+%--- runs(C, S) means computer C runs operating system S
+ 
+tff(runs_type, type, runs : (computer * os) > $o).
+ 
+%--- benefits(C, O) means computer C benefits from origin O
+ 
+tff(benefits_type, type, benefits : (computer * origin) > $o).
+ 
+%--- axiom 1: the only operating systems are Linux, Windows, and OSX
+ 
+tff(os_exhaustive, axiom,
+    ! [X : os] : (X = linux | X = windows | X = osx)).
+ 
+%--- axiom 2: they are all distinct
+ 
+tff(linux_ne_windows, axiom, linux != windows).
+tff(linux_ne_osx,     axiom, linux != osx).
+tff(windows_ne_osx,   axiom, windows != osx).
+ 
+%--- axiom 3: the only origins are UNIX and DOS
+ 
+tff(origin_exhaustive, axiom,
+    ! [X : origin] : (X = unix | X = dos)).
+ 
+%--- axiom 4: UNIX and DOS are distinct
+ 
+tff(unix_ne_dos, axiom, unix != dos).
+ 
+%--- axiom 5: origins of each OS
+ 
+tff(linux_from_unix,   axiom, os_origin(linux)   = unix).
+tff(osx_from_unix,     axiom, os_origin(osx)     = unix).
+tff(windows_from_dos,  axiom, os_origin(windows)  = dos).
+ 
+%--- axiom 6: every computer runs at least one OS
+ 
+tff(all_computers_run, axiom,
+    ! [C : computer] : ? [S : os] : runs(C, S)).
+ 
+%--- axiom 7: running an OS means benefiting from its origin
+ 
+tff(running_gives_benefit, axiom,
+    ! [C : computer, S : os] :
+        (runs(C, S) => benefits(C, os_origin(S)))).
+ 
+%--- axiom 8: my computer runs OSX
+ 
+tff(mypc_runs_osx, axiom, runs(mypc, osx)).
+ 
+%--- conjecture: my computer benefits from UNIX
+ 
+tff(mypc_benefits_unix, conjecture, benefits(mypc, unix)).
